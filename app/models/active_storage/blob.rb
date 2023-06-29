@@ -1,8 +1,10 @@
 require "active_storage/service"
 require "active_storage/filename"
-require "active_storage/purge_job"
+require "active_storage/purge_blob_worker"
+require "active_storage/purge_attachment_worker"
 require "active_storage/variant"
 require "active_storage/variation"
+require "strong_parameters"
 
 # A blob is a record that contains the metadata about a file and a key for where that file resides on the service.
 # Blobs can be created in two ways:
@@ -19,6 +21,9 @@ require "active_storage/variation"
 # If you need to create a derivative or otherwise change the blob, simply create a new blob and purge the old.
 class ActiveStorage::Blob < ActiveRecord::Base
   self.table_name = "active_storage_blobs"
+
+  attr_protected
+  include ActiveModel::ForbiddenAttributesProtection
 
   has_secure_token :key
   store :metadata, coder: JSON
@@ -85,16 +90,16 @@ class ActiveStorage::Blob < ActiveRecord::Base
   end
 
   # Returns true if the content_type of this blob is in the image range, like image/png.
-  def image?() content_type =~ /^image/ end
+  def image?() content_type.start_with?('image') end
 
   # Returns true if the content_type of this blob is in the audio range, like audio/mpeg.
-  def audio?() content_type =~ /^audio/ end
+  def audio?() content_type.start_with?('audio') end
 
   # Returns true if the content_type of this blob is in the video range, like video/mp4.
-  def video?() content_type =~ /^video/ end
+  def video?() content_type.start_with?('video') end
 
   # Returns true if the content_type of this blob is in the text range, like text/plain.
-  def text?()  content_type =~ /^text/  end
+  def text?()  content_type.start_with?('text')  end
 
   # Returns a `ActiveStorage::Variant` instance with the set of `transformations` passed in. This is only relevant
   # for image files, and it allows any image to be transformed for size, colors, and the like. Example:
@@ -177,7 +182,7 @@ class ActiveStorage::Blob < ActiveRecord::Base
   # Enqueues a `ActiveStorage::PurgeJob` job that'll call `#purge`. This is the recommended way to purge blobs when the call
   # needs to be made from a transaction, a callback, or any other real-time scenario.
   def purge_later
-    ActiveStorage::PurgeJob.perform_later(self)
+    ActiveStorage::PurgeBlobWorker.perform_async(self.id)
   end
 
   private

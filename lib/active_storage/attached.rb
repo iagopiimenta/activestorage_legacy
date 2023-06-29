@@ -2,7 +2,7 @@ require "active_storage/blob"
 require "active_storage/attachment"
 
 require "action_dispatch/http/upload"
-require "active_support/core_ext/module/delegation"
+require "active_storage/patches/delegation"
 
 # Abstract baseclass for the concrete `ActiveStorage::Attached::One` and `ActiveStorage::Attached::Many`
 # classes that both provide proxy access to the blob association for a record.

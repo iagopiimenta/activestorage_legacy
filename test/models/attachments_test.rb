@@ -9,8 +9,6 @@ class User < ActiveRecord::Base
 end
 
 class ActiveStorage::AttachmentsTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   setup { @user = User.create!(name: "DHH") }
 
   teardown { ActiveStorage::Blob.all.each(&:purge) }
@@ -50,10 +48,10 @@ class ActiveStorage::AttachmentsTest < ActiveSupport::TestCase
     @user.avatar.attach create_blob(filename: "funky.jpg")
     avatar_key = @user.avatar.key
 
-    perform_enqueued_jobs do
+    Sidekiq::Testing.inline! do
       @user.destroy
 
-      assert_nil ActiveStorage::Blob.find_by(key: avatar_key)
+      assert_nil ActiveStorage::Blob.where(key: avatar_key).first
       assert_not ActiveStorage::Blob.service.exist?(avatar_key)
     end
   end
@@ -111,13 +109,13 @@ class ActiveStorage::AttachmentsTest < ActiveSupport::TestCase
     @user.highlights.attach create_blob(filename: "funky.jpg"), create_blob(filename: "wonky.jpg")
     highlight_keys = @user.highlights.collect(&:key)
 
-    perform_enqueued_jobs do
+    Sidekiq::Testing.inline! do
       @user.destroy
 
-      assert_nil ActiveStorage::Blob.find_by(key: highlight_keys.first)
+      assert_nil ActiveStorage::Blob.where(key: highlight_keys.first).first
       assert_not ActiveStorage::Blob.service.exist?(highlight_keys.first)
 
-      assert_nil ActiveStorage::Blob.find_by(key: highlight_keys.second)
+      assert_nil ActiveStorage::Blob.where(key: highlight_keys.second).first
       assert_not ActiveStorage::Blob.service.exist?(highlight_keys.second)
     end
   end

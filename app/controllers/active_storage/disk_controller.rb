@@ -16,6 +16,7 @@ class ActiveStorage::DiskController < ActionController::Base
     if token = decode_verified_token
       if acceptable_content?(token)
         disk_service.upload token[:key], request.body, checksum: token[:checksum]
+        head :no_content
       else
         head :unprocessable_entity
       end
@@ -37,7 +38,7 @@ class ActiveStorage::DiskController < ActionController::Base
     end
 
     def disposition_param
-      params[:disposition].presence_in(%w( inline attachment )) || "inline"
+      params[:disposition].in?(%w(inline attachment)) ? params[:disposition] : 'inline'
     end
 
 

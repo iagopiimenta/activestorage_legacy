@@ -4,13 +4,22 @@ module ActiveStorage
   class Engine < Rails::Engine # :nodoc:
     config.active_storage = ActiveSupport::OrderedOptions.new
 
-    config.eager_load_namespaces << ActiveStorage
+    # config.eager_load_namespaces << ActiveStorage
 
     initializer "active_storage.logger" do
       require "active_storage/service"
 
       config.after_initialize do |app|
         ActiveStorage::Service.logger = app.config.active_storage.logger || Rails.logger
+      end
+    end
+
+    initializer 'active_storage.extend_active_record' do
+      require "active_storage/patches"
+      require "active_storage/patches/active_record"
+
+      ActiveSupport.on_load :active_record do
+        extend ActiveStorage::Patches::ActiveRecord
       end
     end
 
@@ -22,9 +31,22 @@ module ActiveStorage
       end
     end
 
+    # Port of Rails.application.key_generator.generate_key('ActiveStorage')
+    #   Used to sign ActiveStorage::Blob
+    # See: https://github.com/rails/activestorage/blob/archive/lib/active_storage/engine.rb#L27
+    # https://github.com/rails/rails/blob/7-0-stable/activesupport/lib/active_support/key_generator.rb#L40
     initializer "active_storage.verifier" do
+      require 'active_storage/verifier'
+
       config.after_initialize do |app|
-        ActiveStorage.verifier = app.message_verifier("ActiveStorage")
+        key = OpenSSL::PKCS5.pbkdf2_hmac(
+          app.config.secret_token,
+          'ActiveStorage',
+          1000,
+          64,
+          OpenSSL::Digest::SHA256.new
+        )
+        ActiveStorage.verifier = ActiveStorage::Verifier.new(key)
       end
     end
 

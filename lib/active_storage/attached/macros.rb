@@ -26,7 +26,12 @@ module ActiveStorage::Attached::Macros
         instance_variable_set("@active_storage_attached_#{name}", ActiveStorage::Attached::One.new(name, self))
     end
 
-    has_one :"#{name}_attachment", -> { where(name: name) }, class_name: "ActiveStorage::Attachment", as: :record
+    if Rails.version < '4.0'
+      has_one :"#{name}_attachment", conditions: proc { "name = '#{name}'" }, class_name: "ActiveStorage::Attachment", as: :record
+    else
+      has_one :"#{name}_attachment", -> { where(name: name) }, class_name: "ActiveStorage::Attachment", as: :record
+    end
+
     has_one :"#{name}_blob", through: :"#{name}_attachment", class_name: "ActiveStorage::Blob", source: :blob
 
     if dependent == :purge_later
@@ -64,7 +69,12 @@ module ActiveStorage::Attached::Macros
         instance_variable_set("@active_storage_attached_#{name}", ActiveStorage::Attached::Many.new(name, self))
     end
 
-    has_many :"#{name}_attachments", -> { where(name: name) }, as: :record, class_name: "ActiveStorage::Attachment"
+    if Rails.version < '4.0'
+      has_many :"#{name}_attachments", conditions: proc { "name = '#{name}'" }, as: :record, class_name: "ActiveStorage::Attachment"
+    else
+      has_many :"#{name}_attachments", -> { where(name: name) }, as: :record, class_name: "ActiveStorage::Attachment"
+    end
+
     has_many :"#{name}_blobs", through: :"#{name}_attachments", class_name: "ActiveStorage::Blob", source: :blob
 
     scope :"with_attached_#{name}", -> { includes("#{name}_attachments": :blob) }

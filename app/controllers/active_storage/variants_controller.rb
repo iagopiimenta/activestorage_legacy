@@ -23,6 +23,6 @@ class ActiveStorage::VariantsController < ActionController::Base
     end
 
     def disposition_param
-      params[:disposition].presence_in(%w( inline attachment )) || "inline"
+      params[:disposition].in?(%w(inline attachment)) ? params[:disposition] : 'inline'
     end
 end

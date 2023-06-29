@@ -1,14 +1,16 @@
 require File.expand_path("../../test/dummy/config/environment.rb", __FILE__)
 
 require "bundler/setup"
+
+require "test/unit/active_support"
+
 require "active_support"
 require "active_support/test_case"
-require "active_support/testing/autorun"
-require "byebug"
 
-require "active_job"
-ActiveJob::Base.queue_adapter = :test
-ActiveJob::Base.logger = nil
+require "byebug"
+require "sidekiq"
+require 'sidekiq/testing'
+require "sidekiq/minitest_support"
 
 require "active_storage"
 
@@ -21,13 +23,17 @@ rescue Errno::ENOENT
 end
 
 require "tmpdir"
-ActiveStorage::Blob.service = ActiveStorage::Service::DiskService.new(root: Dir.mktmpdir("active_storage_tests"))
-ActiveStorage::Service.logger = ActiveSupport::Logger.new(STDOUT)
+require 'active_storage/service/disk_service'
+require 'support/assertions'
 
-ActiveStorage.verifier = ActiveSupport::MessageVerifier.new("Testing")
+ActiveStorage::Blob.service = ActiveStorage::Service::DiskService.new(root: Dir.mktmpdir("active_storage_tests"))
+ActiveStorage::Service.logger = ::Logger.new(STDOUT)
+
+ActiveStorage.verifier = ActiveStorage::Verifier.new('Testing')
 
 class ActiveSupport::TestCase
-  self.file_fixture_path = File.expand_path("../fixtures/files", __FILE__)
+  include Assertions
+  include SidekiqMinitestSupport
 
   private
     def create_blob(data: "Hello world!", filename: "hello.txt", content_type: "text/plain")
@@ -47,8 +53,12 @@ class ActiveSupport::TestCase
     def read_image_variant(variant)
       MiniMagick::Image.open variant.service.send(:path_for, variant.key)
     end
-end
 
-require "global_id"
-GlobalID.app = "ActiveStorageExampleApp"
-ActiveRecord::Base.send :include, GlobalID::Identification
+    def file_fixture(filename)
+      Pathname(File.join(file_fixture_path, filename))
+    end
+
+    def file_fixture_path
+      File.expand_path("../fixtures/files", __FILE__)
+    end
+end

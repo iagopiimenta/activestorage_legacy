@@ -108,6 +108,6 @@ class ActiveStorage::Service
 
     def service_name
       # ActiveStorage::Service::DiskService => Disk
-      self.class.name.split("::").third.remove("Service")
+      self.class.name.split("::").third.gsub!('Service', '')
     end
 end
