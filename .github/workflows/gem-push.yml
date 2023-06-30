@@ -17,7 +17,7 @@ jobs:
         with:
           ruby-version: 2.3.8
           bundler-cache: true
-          bundler: default
+          bundler: 1
       - name: Publish to RubyGems
         run: |
           mkdir -p $HOME/.gem
