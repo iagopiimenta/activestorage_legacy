@@ -3,9 +3,11 @@
   $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
 end
 
+require_relative "lib/active_storage/version"
+
 Gem::Specification.new do |s|
   s.name     = "activestorage_legacy"
-  s.version  = "0.1"
+  s.version  = ActiveStorage.version
   s.authors  = "David Heinemeier Hansson"
   s.email    = "david@basecamp.com"
   s.summary  = "Attach cloud and local files in Rails applications"

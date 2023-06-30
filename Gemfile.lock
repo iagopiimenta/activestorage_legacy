@@ -10,7 +10,7 @@ GIT
 PATH
   remote: .
   specs:
-    activestorage_legacy (0.1)
+    activestorage_legacy (0.1.0.alpha)
       marcel (>= 1.0)
       mini_magick (>= 4.0)
       rails (>= 3.2.22.4)
