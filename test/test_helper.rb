@@ -1,3 +1,8 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter %r{^/test/}
+end
+
 require File.expand_path("../../test/dummy/config/environment.rb", __FILE__)
 
 require "bundler/setup"
