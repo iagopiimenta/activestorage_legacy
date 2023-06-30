@@ -2,6 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/08cd6d56a89a29295a83/maintainability)](https://codeclimate.com/github/iagopiimenta/activestorage_legacy/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/08cd6d56a89a29295a83/test_coverage)](https://codeclimate.com/github/iagopiimenta/activestorage_legacy/test_coverage)
+[![Gem Version](https://badge.fury.io/rb/activestorage_legacy.svg)](https://badge.fury.io/rb/activestorage_legacy)
 
 ## Forked to work with Rails 3
 
