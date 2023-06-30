@@ -4,7 +4,7 @@ require "active_storage/purge_blob_worker"
 require "active_storage/purge_attachment_worker"
 require "active_storage/variant"
 require "active_storage/variation"
-require "strong_parameters"
+require "strong_parameters" if Rails.version < '4.0'
 
 # A blob is a record that contains the metadata about a file and a key for where that file resides on the service.
 # Blobs can be created in two ways:
@@ -22,8 +22,8 @@ require "strong_parameters"
 class ActiveStorage::Blob < ActiveRecord::Base
   self.table_name = "active_storage_blobs"
 
-  attr_protected
-  include ActiveModel::ForbiddenAttributesProtection
+  attr_protected if defined?(attr_protected)
+  include ActiveModel::ForbiddenAttributesProtection if defined?(ActiveModel::ForbiddenAttributesProtection)
 
   has_secure_token :key
   store :metadata, coder: JSON

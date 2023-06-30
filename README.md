@@ -9,7 +9,11 @@ See the complete list of changes in https://github.com/rails/activestorage/compa
 
 ## Installation
 
-1. Add `gem "activestorage_legacy", git: "https://github.com/rails/activestorage.git"` to your Gemfile.
+1. Add `activestorage_legacy` and `strong_parameters` to your Gemfile:
+```ruby
+gem 'strong_parameters'
+gem 'activestorage_legacy'
+```
 2. Add `require "active_storage"` to config/application.rb, after `require "rails/all"` line.
 3. Run `rake activestorage:install` to create needed directories, migrations, and configuration.
 4. Configure the storage service in `config/environments/*` with `config.active_storage.service = :local`

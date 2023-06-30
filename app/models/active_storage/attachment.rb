@@ -1,6 +1,6 @@
 require "active_storage/blob"
 require "active_storage/patches/delegation"
-require "strong_parameters"
+require "strong_parameters" if Rails.version < '4.0'
 
 # Attachments associate records with blobs. Usually that's a one record-many blobs relationship,
 # but it is possible to associate many different records with the same blob. If you're doing that,
@@ -9,8 +9,8 @@ require "strong_parameters"
 class ActiveStorage::Attachment < ActiveRecord::Base
   self.table_name = "active_storage_attachments"
 
-  attr_protected
-  include ActiveModel::ForbiddenAttributesProtection
+  attr_protected if defined?(attr_protected)
+  include ActiveModel::ForbiddenAttributesProtection if defined?(ActiveModel::ForbiddenAttributesProtection)
 
   belongs_to :record, polymorphic: true
   belongs_to :blob, class_name: "ActiveStorage::Blob"

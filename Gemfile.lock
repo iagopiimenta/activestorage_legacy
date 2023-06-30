@@ -15,7 +15,6 @@ PATH
       mini_magick (>= 4.0)
       rails (>= 3.2.22.4)
       sidekiq (>= 4.2.0)
-      strong_parameters
 
 GEM
   remote: https://rubygems.org/
@@ -264,6 +263,7 @@ DEPENDENCIES
   rubocop
   simplecov
   sqlite3
+  strong_parameters
   test-unit (~> 3.6)
   test-unit-rails (~> 1.0)
 

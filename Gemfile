@@ -11,6 +11,7 @@ gem "byebug"
 
 group :test do
   gem "simplecov"
+  gem 'strong_parameters'
 end
 
 gem "sqlite3"

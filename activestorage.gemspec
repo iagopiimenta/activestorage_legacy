@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", ">= 3.2.22.4"
   s.add_dependency "sidekiq", ">= 4.2.0"
-  s.add_dependency "strong_parameters"
   s.add_dependency "mini_magick", ">= 4.0"
   s.add_dependency "marcel", ">= 1.0"
 
