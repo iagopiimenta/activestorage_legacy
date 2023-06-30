@@ -9,6 +9,10 @@ gem "rails", "~> 3.2.22.4"
 gem "rake"
 gem "byebug"
 
+group :test do
+  gem "simplecov"
+end
+
 gem "sqlite3"
 gem "httparty"
 

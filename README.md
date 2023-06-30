@@ -1,5 +1,7 @@
 # Active Storage
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/08cd6d56a89a29295a83/maintainability)](https://codeclimate.com/github/iagopiimenta/activestorage_legacy/maintainability)
+
 Active Storage makes it simple to upload and reference files in cloud services, like Amazon S3 or Google Cloud Storage,
 and attach those files to Active Records. It also provides a disk service for testing or local deployments, but the
 focus is on cloud storage.
