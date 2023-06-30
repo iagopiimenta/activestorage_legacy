@@ -14,7 +14,7 @@ group :test do
   gem 'strong_parameters'
 end
 
-gem "sqlite3"
+gem "sqlite3", "~> 1.3.0"
 gem "httparty"
 
 gem "aws-sdk", "~> 2", require: false

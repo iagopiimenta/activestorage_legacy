@@ -17,6 +17,8 @@ jobs:
         with:
           ruby-version: 2.3.8
           bundler-cache: true
+      - name: Install bundler
+        run: gem install bundler -v 1.17.0
       - name: Publish to RubyGems
         run: |
           mkdir -p $HOME/.gem
