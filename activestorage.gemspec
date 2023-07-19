@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors  = "David Heinemeier Hansson"
   s.email    = "david@basecamp.com"
   s.summary  = "Attach cloud and local files in Rails applications"
-  s.homepage = "https://github.com/rails/activestorage"
+  s.homepage = "https://github.com/iagopiimenta/activestorage_legacy"
   s.license  = "MIT"
 
   s.required_ruby_version = ">= 2.2.2"
